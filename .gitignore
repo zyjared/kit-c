@@ -1,3 +1,6 @@
+# Visual Studio Code
+.vscode/tasks.json
+
 # Prerequisites
 *.d
 
