@@ -1,5 +1,8 @@
 /build/
 /test/
+tempCodeRunnerFile.c
+.vscode/launch.json
+.vscode/tasks.json
 
 # Prerequisites
 *.d
