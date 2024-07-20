@@ -1,5 +1,5 @@
 /*
- * 顺序表
+ * 顺序表 (Sequenatial List)
  */
 
 #include <stdio.h>
@@ -57,7 +57,8 @@ void increaseSize(SqList* L, int len) {
 }
 
 /**
- * @brief 在顺序表中插入，将动态扩容
+ * 如果最大容量不够，将自动扩容。
+ * If maxSize is not enough, the list will be automatically expanded.
  */
 bool listInsert(SqList* L, int i, ElemType e) {
     if (i < 1 || i > L->length + 1) return false;
