@@ -2,18 +2,22 @@ import os
 import re
 
 
-def delete_files_by_regex(folder_path, regex_list, root_folder_path='.'):
+def delete_files_by_regex(folder_path, regex_list, ignore=[]):
     for filename in os.listdir(folder_path):
-        if os.path.isdir(os.path.join(folder_path, filename)):
-            delete_files_by_regex(os.path.join(
-                folder_path, filename), regex_list, root_folder_path)
 
-        file_path = os.path.join(folder_path, filename)
-        relative_path = os.path.relpath(file_path, root_folder_path)
+        if filename in ignore:
+            continue
+
+        path = os.path.join(folder_path, filename)
+
+        if os.path.isdir(path):
+            delete_files_by_regex((path), regex_list, ignore)
+
+        relative_path = os.path.relpath(path, '.')
         for regex_pattern in regex_list:
             if re.search(regex_pattern, filename):
                 try:
-                    os.remove(file_path)
+                    os.remove(path)
                     print(f"Deleted: {relative_path}")
                 except OSError as e:
                     print(f"Error deleting {relative_path}: {e}")
@@ -26,8 +30,10 @@ if __name__ == "__main__":
     else:
         folder = '.'
 
+    ignore = ['.git', 'build', 'dist', '.vscode', 'node_modules', 'docs']
+
     regex_list = [
         r'.*\.(exe|EXE|dat|DAT)$', r'tempCodeRunnerFile\.c'
     ]
 
-    delete_files_by_regex(folder, regex_list)
+    delete_files_by_regex(folder, regex_list, ignore)

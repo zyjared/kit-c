@@ -1,9 +1,13 @@
 tempCodeRunnerFile.c
+build
 
-/build/
-/test/
+# node
+node_modules/
 
-# .vscode
+cache
+dist
+
+# vscode
 .vscode/
 !.vscode/extensions.json
 
