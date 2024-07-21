@@ -1,12 +1,12 @@
 /*
  * 单向链表
+
  * 此处首个节点仅存储下一个节点的地址，不存储数据，即固定头结点。
- * 另外，注意函数参数是双指针的情况。
  *
  *
  * Singly Linked List
+ *
  * The first node stores the address of the next node, not the data.
- * Note that the function parameter is a double pointer.
  */
 
 #include <stdio.h>
@@ -18,14 +18,14 @@ typedef int ElemType;
 typedef struct Node {
     ElemType data;
     struct Node* next;
-} Node, * LNode;
+} Node, * LinkList;
 
 // ===================================
 // utils
 // ===================================
 
-LNode createLNode() {
-    LNode node = (LNode)malloc(sizeof(Node));
+LinkList createEmptyLinkList() {
+    LinkList node = (LinkList)malloc(sizeof(Node));
     if (node == NULL) exit(1);
 
     node->next = NULL;
@@ -42,7 +42,7 @@ bool isEqual(ElemType e1, ElemType e2) {
  *
  * Get the i-th node, allowing the head node
  */
-LNode getLNode(LNode L, int i) {
+LinkList getLinkList(LinkList L, int i) {
     if (i < 0) return NULL;
 
     Node* node = L;
@@ -53,10 +53,10 @@ LNode getLNode(LNode L, int i) {
         j++;
     }
 
-    return node; // NULL or LNode
+    return node; // NULL or LinkList
 }
 
-void printList(LNode L) {
+void printList(LinkList L) {
     if (L == NULL) {
         printf("NULL\n");
         return;
@@ -72,16 +72,16 @@ void printList(LNode L) {
 // ===================================
 // ===================================
 
-bool initList(LNode* L) {
-    *L = createLNode();
+bool initList(LinkList* L) {
+    *L = createEmptyLinkList();
     return true;
 }
 
-bool isEmpty(LNode L) {
+bool isEmpty(LinkList L) {
     return L->next == NULL;
 }
 
-int listLength(LNode L) {
+int listLength(LinkList L) {
     int length = 0;
 
     Node* node = L->next;
@@ -93,10 +93,10 @@ int listLength(LNode L) {
     return length;
 }
 
-bool getElem(LNode L, int i, ElemType* e) {
+bool getElem(LinkList L, int i, ElemType* e) {
     if (i < 1) return false;
 
-    Node* node = getLNode(L, i);
+    Node* node = getLinkList(L, i);
     if (node == NULL) return false;
 
     *e = node->data;
@@ -104,70 +104,70 @@ bool getElem(LNode L, int i, ElemType* e) {
     return true;
 }
 
-bool listInsert(LNode L, int i, ElemType e) {
-    LNode preLNode = getLNode(L, i - 1);
-    if (preLNode == NULL) return false;
+bool listInsert(LinkList L, int i, ElemType e) {
+    LinkList preLinkList = getLinkList(L, i - 1);
+    if (preLinkList == NULL) return false;
 
-    LNode newLNode = createLNode();
-    newLNode->data = e;
-    newLNode->next = preLNode->next;
+    LinkList newLinkList = createEmptyLinkList();
+    newLinkList->data = e;
+    newLinkList->next = preLinkList->next;
 
-    preLNode->next = newLNode;
+    preLinkList->next = newLinkList;
 
     return true;
 }
 
-bool listInsertPrior(LNode L, ElemType e) {
+bool listInsertPrior(LinkList L, ElemType e) {
     if (L == NULL) return false;
 
-    LNode copyLNode = createLNode();
-    copyLNode->data = L->data;
-    copyLNode->next = L->next;
+    LinkList copyLinkList = createEmptyLinkList();
+    copyLinkList->data = L->data;
+    copyLinkList->next = L->next;
 
     L->data = e;
-    L->next = copyLNode;
+    L->next = copyLinkList;
 
     return true;
 }
 
-bool listInsertNext(LNode L, ElemType e) {
-    LNode newLNode = createLNode();
-    newLNode->data = e;
-    newLNode->next = L->next;
+bool listInsertNext(LinkList L, ElemType e) {
+    LinkList newLinkList = createEmptyLinkList();
+    newLinkList->data = e;
+    newLinkList->next = L->next;
 
-    L->next = newLNode;
-
-    return true;
-}
-
-bool listDelete(LNode L, int i, ElemType* e) {
-    LNode preLNode = getLNode(L, i - 1);
-    if (preLNode == NULL) return false;
-
-    LNode delLNode = preLNode->next;
-    preLNode->next = delLNode->next;
-    *e = delLNode->data;
-
-    free(delLNode);
-    delLNode = NULL;
+    L->next = newLinkList;
 
     return true;
 }
 
-int locateElem(LNode L, ElemType e) {
-    LNode preLNode = L;
+bool listDelete(LinkList L, int i, ElemType* e) {
+    LinkList preLinkList = getLinkList(L, i - 1);
+    if (preLinkList == NULL) return false;
+
+    LinkList delLinkList = preLinkList->next;
+    preLinkList->next = delLinkList->next;
+    *e = delLinkList->data;
+
+    free(delLinkList);
+    delLinkList = NULL;
+
+    return true;
+}
+
+int locateElem(LinkList L, ElemType e) {
+    LinkList preLinkList = L;
     int i = 0;
 
-    while (preLNode->next && !isEqual(preLNode->next->data, e)) {
-        preLNode = preLNode->next;
+    while (preLinkList->next && !isEqual(preLinkList->next->data, e)) {
+        preLinkList = preLinkList->next;
         i++;
     }
 
-    return preLNode->next == NULL ? 0 : i + 1;
+    return preLinkList->next == NULL ? 0 : i + 1;
 }
 
 int main() {
-    LNode L;
+    LinkList L;
 
     // ================= init ===============
 

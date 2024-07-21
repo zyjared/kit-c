@@ -1,13 +1,11 @@
 /*
  * 双向链表
  *
- * 基本和 singlyLinkedList 一致，只是增加了前后指针。
- * 操作一个节点的时候，需要考虑修改其前后节点的情况。
+ *   - "add" 注释是相对于单向链表的: singlyLinkedList.c
  *
  * Double Linked List
  *
- * The basic is the same as singlyLinkedList, only that the next and prior pointers are added.
- * When you want to operate a node, you need to consider the modification of its next and prior nodes.
+ *   - 'add' comment is relative to singly linked list: singlyLinkedList.c
  */
 
 #include <stdio.h>
@@ -18,21 +16,40 @@ typedef int ElemType;
 
 typedef struct DNode {
     ElemType data;
-    struct DNode* prior;
+    struct DNode* prior;                        // add
     struct DNode* next;
 } DNode, * DLinkList;
 
-// ----------------------------------
+// ===================================
 // utils
-// ----------------------------------
+// ===================================
 
 DNode* createEmptyDNode() {
-    DNode* p = (DNode*)malloc(sizeof(DNode)); // 注意释放 - don't forget to use free()
-    if (p == NULL) exit(1);
-    p->prior = NULL;
-    p->next = NULL;
+    DNode* node = (DNode*)malloc(sizeof(DNode));
+    if (node == NULL) exit(1);
 
-    return p;
+    node->next = NULL;
+    node->prior = NULL;                         // add
+
+    return node;
+}
+
+bool isEqual(ElemType e1, ElemType e2) {
+    return e1 == e2;
+}
+
+DNode* getDNode(DLinkList L, int i) {
+    if (i < 0) return NULL;
+
+    DNode* node = L;
+    int j = 0;
+
+    while (node && j < i) {
+        node = node->next;
+        j++;
+    }
+
+    return node;                                 // NULL or LNode
 }
 
 void printList(DLinkList L) {
@@ -48,10 +65,10 @@ void printList(DLinkList L) {
     printf("\n");
 }
 
-// ----------------------------------
-// ----------------------------------
+// ===================================
+// ===================================
 
-bool initDList(DLinkList* L) {
+bool initList(DLinkList* L) {
     *L = createEmptyDNode();
     return true;
 }
@@ -60,45 +77,171 @@ bool isEmpty(DLinkList L) {
     return L->next == NULL;
 }
 
-bool insNext(DNode* p, DNode* s) {
-    if (p == NULL || s == NULL) return false;
+int listLength(DLinkList L) {
+    int length = 0;
 
-    // s 节点本身           - s node itself
-    s->next = p->next;
-    s->prior = p;
+    DNode* node = L->next;
+    while (node) {
+        node = node->next;
+        length++;
+    }
 
-    // s 节点的下一个节点   - s node's next node
-    if (p->next != NULL)
-        p->next->prior = s;
+    return length;
+}
 
-    // s 节点的上一个节点   - s node's prior node
-    p->next = s;
+bool getElem(DLinkList L, int i, ElemType* e) {
+    if (i < 1) return false;
+
+    DNode* node = getDNode(L, i);
+    if (node == NULL) return false;
+
+    *e = node->data;
 
     return true;
+}
+
+bool listInsert(DLinkList L, int i, ElemType e) {
+    DNode* preNode = getDNode(L, i - 1);
+    if (preNode == NULL) return false;
+
+    // new node
+    DNode* newNode = createEmptyDNode();
+    newNode->data = e;
+    newNode->next = preNode->next;
+    newNode->prior = preNode;                   // add
+
+    // next
+    if (newNode->next != NULL) {
+        newNode->next->prior = newNode;         // add
+    }
+
+    // prior
+    preNode->next = newNode;
+
+    return true;
+}
+
+bool listInsertPrior(DNode* node, ElemType e) {
+    if (node == NULL) return false;
+
+    // next
+    DNode* copyNode = createEmptyDNode();
+    copyNode->data = node->data;
+    copyNode->next = node->next;
+    copyNode->prior = node;                     // add
+
+    // new node
+    node->data = e;
+    node->prior = node->prior;                  // add
+    node->next = copyNode;
+
+    return true;
+}
+
+bool listInsertNext(DNode* node, ElemType e) {
+    // new node
+    DNode* newLNode = createEmptyDNode();
+    newLNode->data = e;
+    newLNode->next = node->next;
+    newLNode->prior = node;                     // add
+
+    // next
+    if (node->next != NULL) {
+        node->next->prior = newLNode;           // add
+    }
+
+    // prior
+    node->next = newLNode;
+
+    return true;
+}
+
+bool listDelete(DLinkList L, int i, ElemType* e) {
+    DNode* preLNode = getDNode(L, i - 1);
+    if (preLNode == NULL) return false;
+
+    DNode* delLNode = preLNode->next;
+    *e = delLNode->data;
+
+    // prior
+    preLNode->next = delLNode->next;
+
+    // next
+    if (delLNode->next != NULL) {
+        delLNode->next->prior = preLNode;       // add
+    }
+
+    free(delLNode);
+    delLNode = NULL;
+
+    return true;
+}
+
+int locateElem(DLinkList L, ElemType e) {
+    DNode* preLNode = L;
+    int i = 0;
+
+    while (preLNode->next && !isEqual(preLNode->next->data, e)) {
+        preLNode = preLNode->next;
+        i++;
+    }
+
+    return preLNode->next == NULL ? 0 : i + 1;
 }
 
 int main() {
     DLinkList L;
 
-    initDList(&L);
+    // ================= init ===============
 
-    DNode* node = createEmptyDNode();
+    initList(&L);
+    printf("initList:                %3d\n", L == NULL);
 
-    // ------------insert------------
+    // ================ insert ==============
 
-    node->data = 1;
-    insNext(L, node);
-    printf("insNext:    %d\n", L->next->data);
-
-    int testData[4] = { 2, 3, 4, 5 };
-    for (int i = 0; i < sizeof(testData) / sizeof(int); i++) {
-        node = createEmptyDNode();
-        node->data = testData[i];
-        insNext(L, node);
-    }
-
-    printf("            ");
+    listInsert(L, 1, 6);
+    printf("listInsert:               ");
     printList(L);
+
+    // =============== insert next ==========
+
+    ElemType testData[4] = { 5, 4, 3, 1 };
+    for (int i = 0; i < sizeof(testData) / sizeof(ElemType); i++) {
+        listInsertNext(L, testData[i]);
+    }
+    printf("listInsertNext:           ");
+    printList(L);
+
+    // ============ insert prior =============
+
+    listInsertPrior(L->next->next, 2);
+    printf("listInsertPrior:          ");
+    printList(L);
+
+    // =============== isEmpty ==============
+
+    printf("isEmpty:                %3d\n", isEmpty(L));
+
+    // ================= length =============
+
+    printf("listLength:             %3d\n", listLength(L));
+
+    // ================= get ================
+
+    ElemType getE;
+    getElem(L, 3, &getE);
+    printf("getElem:                %3d\n", getE);
+
+    // ================= delete =============
+
+    ElemType delE;
+    listDelete(L, 3, &delE);
+    printf("listDelete:             %3d -> ", delE);
+    printList(L);
+
+    // ================= locate =============
+
+    printf("locateElem:             %3d\n", locateElem(L, 5));
 
     return 0;
 }
