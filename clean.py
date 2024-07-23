@@ -28,7 +28,7 @@ if __name__ == "__main__":
     if len(os.sys.argv) > 1:
         folder = os.sys.argv[1]
     else:
-        folder = '.'
+        folder = 'src'
 
     ignore = ['.git', 'build', 'dist', '.vscode', 'node_modules', 'docs']
 

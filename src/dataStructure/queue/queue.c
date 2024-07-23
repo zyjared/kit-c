@@ -1,26 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "queue.h"
 
-typedef int ElemType;
-
-typedef struct Node {
-    ElemType data;
-    struct Node* next;
-} Node;
-
-typedef struct {
-    Node* front;
-    Node* rear;
-} LinkQueue;
-
-typedef enum {
-    ERROR,
-    OK
-} Status;
-
-// ------------------------------------------
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//
 // utils
-// ------------------------------------------
+//
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void printQueue(LinkQueue Q) {
     Node* node = Q.front->next;
@@ -31,7 +17,7 @@ void printQueue(LinkQueue Q) {
     printf("\n");
 }
 
-// ------------------------------------------
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 Status initQueue(LinkQueue* Q) {
     Q->front = Q->rear = (Node*)malloc(sizeof(Node));

@@ -1,31 +1,12 @@
-/*
- * 栈
- *
- * Stack
- */
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "stack.h"
 
-#define INIT_SIZE 20
-#define INCREMENT_SIZE 10
-
-typedef enum {
-    ERROR,
-    OK
-} Status;
-
-typedef int ElemType;
-
-typedef struct {
-    ElemType* base;
-    ElemType* top;
-    int stackSize;
-} SqStack;
-
-// ------------------------------------------
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//
 // utils
-// ------------------------------------------
+//
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 ElemType* createEmptySElem() {
     ElemType* e = (ElemType*)malloc(sizeof(ElemType));
@@ -41,8 +22,8 @@ void printStack(SqStack S) {
     printf("\n");
 }
 
-// ------------------------------------------
-// ------------------------------------------
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 Status initStack(SqStack* S) {
     S->base = (ElemType*)malloc(INIT_SIZE * sizeof(ElemType));
@@ -56,6 +37,10 @@ Status initStack(SqStack* S) {
 
 Status stackLength(SqStack S) {
     return S.top - S.base;
+}
+
+Status isEmpty(SqStack S) {
+    return S.top == S.base;
 }
 
 Status getTop(SqStack S, ElemType* e) {
@@ -82,7 +67,7 @@ Status pop(SqStack* S, ElemType* e) {
     return OK;
 }
 
-int main() {
+int test() {
 
     SqStack S;
 
@@ -112,3 +97,8 @@ int main() {
 
     return 0;
 }
+
+// int main() {
+//     test();
+//     return 0;
+// }

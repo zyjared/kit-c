@@ -82,5 +82,12 @@
         "scss",
         "pcss",
         "postcss"
-    ]
+    ],
+    "files.associations": {
+        "*.md": "markdown",
+        "*.vue": "vue",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "stack.h": "c"
+    }
 }
